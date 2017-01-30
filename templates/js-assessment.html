@@ -184,19 +184,39 @@
 <script>
   "use strict";
 
+  var randInt = 0
+
+  function getGuesses(evt){
+    evt.preventDefault();
+    var userGuess = Number($("#number-guessed").val());
+    console.log(userGuess);
+    console.log(randInt);
+    if (userGuess < 1 || userGuess > 100){
+      $("#number-guessing-msg").html("That number was out of the range 1-100.");
+    }
+    else if (userGuess < randInt){
+      $("#number-guessing-msg").html("Too low. Keep trying.");
+    }
+    else if (userGuess > randInt){
+      $("#number-guessing-msg").html("Too high. Keep trying.");
+    }
+    else {
+      $("#number-guessing-msg").html("Congratulations, you guessed it!");
+      $("#number-guessed").prop("disabled", true);
+      $("#try-this-number").prop("disabled", true);
+      $("#play-guessing-game").prop("disabled", false);      
+    }
+    return userGuess;
+
+  }
    function playGame(evt) {
       $("#play-guessing-game").prop("disabled", true);
-      var randInt = Math.floor((Math.random() * 100) + 1);
+      randInt = Math.floor((Math.random() * 100) + 1);
+      console.log(randInt);
       $("#number-guessing-msg").html("Guess a number from 1 to 100.");
       $("#number-guessed").prop("disabled", false);
-      // $("#try-this-number").prop("disabled", false);
-      // var userGuess = Number($("#number-guessed").html();)
-      // while (userGuess !== randInt && typeof(userGuess) === "number"){
-      //   if (userGuess < randInt){
-      //     $("#number-guessing-msg").html("Too low. Keep guessing!");
-      // } else {
-      //     $("#number-guessing-msg").html("Too high. Keep guessing!");
-      // }
+      $("#try-this-number").prop("disabled", false);
+      $("#try-this-number").click(getGuesses);
     }
 
   $("#play-guessing-game").on("click", playGame);
@@ -265,6 +285,16 @@
   }
 
   // put your code here
+  function submitVictim(evt){
+    evt.preventDefault();
+
+    var formInputs = $("#t-rex-form").serialize();
+    $.post("/t-rex-attack.json",
+           formInputs,
+           showTRexResults);
+  }
+
+  $("#t-rex-form").on("submit", submitVictim);
 
 </script>
 
